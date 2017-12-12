@@ -233,51 +233,53 @@ public class EditarPerfil extends AppCompatActivity {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
-
+        //creacion de usuario
         final String key = myRef.child("usuario").push().getKey();
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://socialsport-e98f4.appspot.com");
-        imagesRef = storageRef.child("fotosPerfil").child(key + ".png");
-        imagenUsuario.setDrawingCacheEnabled(true);
-        imagenUsuario.buildDrawingCache();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] data = baos.toByteArray();
+        
+        //upload de imagen
+        if(imagenBoolean){
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReferenceFromUrl("gs://socialsport-e98f4.appspot.com");
+            imagesRef = storageRef.child("fotosPerfil").child(key + ".png");
+            imagenUsuario.setDrawingCacheEnabled(true);
+            imagenUsuario.buildDrawingCache();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] data = baos.toByteArray();
 
-        UploadTask uploadTask = imagesRef.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-                Toast.makeText(getBaseContext(), "ALGO SALIO MAL", Toast.LENGTH_LONG).show();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                        .setDisplayName(nombreCompleto)
-                        .setPhotoUri(downloadUrl)
-                        .build();
+            UploadTask uploadTask = imagesRef.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                    Toast.makeText(getBaseContext(), "ALGO SALIO MAL", Toast.LENGTH_LONG).show();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(nombreCompleto)
+                            .setPhotoUri(downloadUrl)
+                            .build();
 
-                firebaseUser.updateProfile(profileUpdates)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    //Log.d(TAG, "User profile updated.");
+                    firebaseUser.updateProfile(profileUpdates)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        //Log.d(TAG, "User profile updated.");
+                                    }
                                 }
-                            }
-                        });
+                            });
 
-            }
-        });
-
+                }
+            });
+        }
 
         // myRef.child("nombre").setValue(nombreCompleto);
         myRef.child("fechaNacimiento").setValue(fechaU);
-
     }
 
     public void mostrarDatos(String nombre, String apellidos, String img, String email) {
