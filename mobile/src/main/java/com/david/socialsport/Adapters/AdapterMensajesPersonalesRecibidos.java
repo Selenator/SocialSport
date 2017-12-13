@@ -91,7 +91,8 @@ public class AdapterMensajesPersonalesRecibidos extends ArrayAdapter<Comentarios
                 Picasso.with(getContext()).load(imagenUsuario).into(imagenUsuarioMensaje);
 
                 peticiones = (LinearLayout) finalConvertView.findViewById(R.id.peticion);
-                botonAceptar = (Button) finalConvertView.findViewById(R.id.boton_aceptar);
+                final Button botonAceptar = (Button) finalConvertView.findViewById(R.id.boton_aceptar);
+                final Button botonDeclinar = (Button) finalConvertView.findViewById(R.id.boton_declinar);
                 botonAceptar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -106,6 +107,8 @@ public class AdapterMensajesPersonalesRecibidos extends ArrayAdapter<Comentarios
                                 Usuario usr = new Usuario(amigo);
                                 anadirAmigo(usr);
 
+                                botonAceptar.setVisibility(View.GONE);
+                                botonDeclinar.setVisibility(View.GONE);
                             }
 
                             @Override
@@ -117,7 +120,6 @@ public class AdapterMensajesPersonalesRecibidos extends ArrayAdapter<Comentarios
                     }
                 });
 
-                botonDeclinar = (Button) finalConvertView.findViewById(R.id.boton_declinar);
                 if (!mensaje.getPeticion()) {
                     peticiones.setVisibility(View.INVISIBLE);
                 } else {
