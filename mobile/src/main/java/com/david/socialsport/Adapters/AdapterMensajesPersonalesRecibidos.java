@@ -142,6 +142,9 @@ public class AdapterMensajesPersonalesRecibidos extends ArrayAdapter<Comentarios
         myRef.child("usuario").child(userID).child("amigos").child(amigo).setValue(true);
         myRef.child("usuario").child(amigo).child("amigos").child(userID).setValue(true);
 
+        myRef.child("usuario").child(userID).child("mensaje").child("recibido").child(mensaje.getIdComentario()).removeValue();
+        myRef.child("usuario").child(amigo).child("mensaje").child("enviado").child(mensaje.getIdComentario()).removeValue();
+        myRef.child("mensaje").child(mensaje.getIdComentario()).removeValue();
 
     }
 }
