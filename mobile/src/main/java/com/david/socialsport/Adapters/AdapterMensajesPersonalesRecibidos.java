@@ -120,6 +120,19 @@ public class AdapterMensajesPersonalesRecibidos extends ArrayAdapter<Comentarios
                     }
                 });
 
+                botonDeclinar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        textoMensaje.setText("rechazado... :(");
+                        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        myRef.child("usuario").child(userID).child("mensaje").child("recibido").child(mensaje.getIdComentario()).removeValue();
+                        myRef.child("usuario").child(mensaje.getIdUsuarioRemitente()).child("mensaje").child("enviado").child(mensaje.getIdComentario()).removeValue();
+
+                        botonAceptar.setVisibility(View.GONE);
+                        botonDeclinar.setVisibility(View.GONE);
+                    }
+                });
+                
                 if (!mensaje.getPeticion()) {
                     peticiones.setVisibility(View.INVISIBLE);
                 } else {
