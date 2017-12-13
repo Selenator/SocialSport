@@ -53,6 +53,10 @@ public class AdapterMensajesPersonalesEnviados extends ArrayAdapter<Comentarios>
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.ficha_mensaje_personal, parent, false);
         }
 
+        final Button botonAceptar = (Button) convertView.findViewById(R.id.boton_aceptar);
+        final Button botonDeclinar = (Button) convertView.findViewById(R.id.boton_declinar);
+        botonAceptar.setVisibility(View.GONE);
+        botonDeclinar.setVisibility(View.GONE);
 
         final Comentarios mensaje = getItem(position);
 
