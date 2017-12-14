@@ -165,16 +165,21 @@ public class PantallaCrearGrupo extends AppCompatActivity {
             crearConImagen(key);
         }
         else{
-            crearSinImagen(key);
+            crear(key, null);
         }
 
 
     }
 
-    private void crearSinImagen(String key) {
+    //Un poco mas de sutileza para no repetir codigo
+    private void crear(String key, Uri downloadUrl) {
         miReferencia.child("grupo").child(key).child("nombre").setValue(textGrupo.getText().toString());
-        miReferencia.child("grupo").child(key).child("integrantes").child(userID).setValue(true);
         miReferencia.child("usuario").child(userID).child("grupo").child(key).setValue(true);
+        if(downloadUrl != null)
+                miReferencia.child("grupo").child(key).child("imagen").setValue(downloadUrl.toString());
+        //recorre el array con los integrantes y los añade a la BBDD
+        for(String idIn:adapter.getIdsIntegrantes())
+            miReferencia.child("grupo").child(key).child("integrantes").child(idIn).setValue(true);
         Toast.makeText(getBaseContext(), "EXITO", Toast.LENGTH_LONG).show();
         finish();
     }
@@ -202,12 +207,7 @@ public class PantallaCrearGrupo extends AppCompatActivity {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                miReferencia.child("grupo").child(key).child("nombre").setValue(textGrupo.getText().toString());
-                miReferencia.child("grupo").child(key).child("imagen").setValue(downloadUrl.toString());
-                miReferencia.child("grupo").child(key).child("integrantes").child(userID).setValue(true);
-                miReferencia.child("usuario").child(userID).child("grupo").child(key).setValue(true);
-                Toast.makeText(getBaseContext(), "EXITO", Toast.LENGTH_LONG).show();
-                finish();
+                crear(key, downloadUrl);
             }
         });
     }
