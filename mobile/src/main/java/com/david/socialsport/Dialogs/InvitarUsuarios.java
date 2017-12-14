@@ -62,7 +62,12 @@ public class InvitarUsuarios extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                //sacamos el amigo del adapter (pillo la referencia desde el propio listview pero deberia ser la misma que tienes en adapter)
+                Usuario amigo = (Usuario) listView.getAdapter().getItem(position);
+                //MIRA BIEN ESTA LINEA QUE ME HE INVENTADO LA ESTRUCTURA DE LA BBDD, lee el comentario del git
+                myRef.child("usuario").child("amigo").child("mensajes").child("invitacionesEvento").child(eventoID).setValue(true);
+                Toast.makeToast(context,"Invitacion Enviada", Toast.Length_SHORT).show();
+                finish();
             }
         });
 
