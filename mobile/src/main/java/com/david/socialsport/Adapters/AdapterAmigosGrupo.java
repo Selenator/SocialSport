@@ -41,12 +41,18 @@ public class AdapterAmigosGrupo extends ArrayAdapter<Usuario>{
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference();
     private Bundle savedInstanceState;
+    
+    //se iran guardando todas las ids de los integrantes aqui
+    private ArrayList<String> idsIntegrantes;
 
     private String nombreAmigo, imagenAmigo;
 
     public AdapterAmigosGrupo(@NonNull Context context, Bundle savedInstanceState) {
         super(context, 0, new ArrayList<Usuario>());
         this.savedInstanceState = savedInstanceState;
+        
+        //iniciamos el array en cuanto creamos el adapter
+        idsIntegrantes = new ArrayList<String>();
     }
 
     public
@@ -79,11 +85,23 @@ public class AdapterAmigosGrupo extends ArrayAdapter<Usuario>{
 
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+                        //OK aqui voy a asumir varias cosas de tu codigo y de androi que pueden no ser ciertas
+                        //1 - usuario2 es el String con el id del usuario de ese checkbox que se quiere añadir al grupo
+                        //2 - el arraylist con el remove pilla bien el item que quiero y no hace cosas raras porque tienen direcciones de memoria distintas
+                        //2.5 - si no lo pilla asi habria que hacer un metodo que compare los valores (o alguna gitanada por el estilo)
+                        //3 - Si intentas hacer remove de algo que no esta no peta
+                        //4 - Los cambios de estado de los checkbox no van a hacer nada raro y funcionan como Si o NO siempre
+                        String usuario2 = dataSnapshot.child("id").getValue(String.class);
                         if (isChecked) {
-                            String usuario2 = dataSnapshot.child("id").getValue(String.class);
-
+                            //Si se chekea el box se guarda el id en el array
+                            idsIntegrantes.add(usuario2);
+                        }else{
+                            //si se des-chekea el box se quita el id del array
+                            idsIntegrantes.remove(usuario2);
                         }
+                        //la idea ahora es que cuando creas el grupo, pilles los ids de este array y los metas en la BBDD colgando del grupo imagino
+                        //ahora pongo otro cambio en la pantalla de crear para hacer eso
+                        //P.D. haz el getter del array que no me apetece
                     }
 
                 });
